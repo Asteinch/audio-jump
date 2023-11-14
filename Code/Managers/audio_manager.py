@@ -45,6 +45,8 @@ class audioManager:
     def find_volume(self, data):
 
         return np.abs(data).mean()
+    
+        #whaaat
 
     def handle_data(self):
 
