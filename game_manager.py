@@ -8,6 +8,8 @@ from Code.Objects.player import Player
 from Code.Objects.cactus import Cacti
 from Code.Objects.bird   import Bird
 
+pygame.init()
+
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
 TITLE = 'Audio Jump'
@@ -23,6 +25,10 @@ class gameManager:
         self.win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
+
+        self.score = 0
+
+        self.font = pygame.font.SysFont("Ariel", 100)
     
         self.setup_classes()
         self.start_thread()
@@ -35,7 +41,10 @@ class gameManager:
     
     def setup_classes(self):
 
+        pygame.display.set_caption("Calibrating Audio")
+
         self.audioManager = audioManager()
+
         self.collisionManager = collisionManager()
 
         self.player = Player(pygame.image.load("./assets/him.png"),
@@ -43,8 +52,10 @@ class gameManager:
         
         self.bird = Bird()
         
-        self.hostiles = [Cacti()]
-        self.collisionManager.add_hostile(self.hostiles[0])
+        self.cacti = Cacti()
+        self.collisionManager.add_hostile(self.cacti)
+
+        pygame.display.set_caption(TITLE)
            
 
     def draw(self):
@@ -52,30 +63,41 @@ class gameManager:
         self.win.fill(WHITE)
 
         self.player.draw(self.win)
-
         self.bird.draw(self.win)
-        
-        for hostile in self.hostiles:
-            hostile.draw(self.win)
+        self.cacti.draw(self.win)
 
         pygame.draw.line(self.win, "black", (0, 500), (1280, 500), 5)
 
+        self.win.blit(self.scoreText, (0,0))
 
 
     def update(self):
+
+        self.scoreText = self.font.render(str(self.score), True, "black")
 
         self.player.update()
         self.player.jump(self.audioManager)
 
         self.bird.update()
+        if self.bird.is_out_of_bounds():
+            self.bird.reset()
 
-        for hostile in self.hostiles:
-            hostile.update()
+        self.cacti.update()
+        if self.cacti.is_out_of_bounds():
+            self.cacti.reset()
+            self.score += 1
+
+        self.collisionManager.update_pos([self.cacti])
         
-        self.collisionManager.update_pos(self.hostiles)
-        
-        #print(self.collisionManager.is_player_collideing(self.player))
-       
+        if self.collisionManager.is_player_collideing(self.player) != None:
+
+            self.player = Player(pygame.image.load("./assets/him.png"),
+                                (200, 100))
+            
+            self.bird.reset()
+            self.cacti.reset()
+            self.score = 0
+
 
         pygame.display.update()
         self.clock.tick(FPS)
