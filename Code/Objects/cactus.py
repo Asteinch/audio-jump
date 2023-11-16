@@ -7,21 +7,30 @@ class Cacti:
 
     def __init__(self):
 
-        images = [pygame.image.load("./assets/cacti2.png"), pygame.image.load("./assets/cacti1.png")]
+        self.images = [pygame.image.load("./assets/cacti2.png"), pygame.image.load("./assets/cacti1.png")]
     
-        self.img = random.choice(images)
+        self.img = random.choice(self.images)
 
         self.mask = pygame.mask.from_surface(self.img)
 
-        self.x, self.y = 500, GROUND_POS - self.img.get_height()
+        self.x, self.y = random.randint(1280, 2000), GROUND_POS - self.img.get_height()
 
     def update(self):
 
-        self.x -= 5
+        self.x -= 10
 
-        if self.x < -50:
+    def is_out_of_bounds(self):
 
-            self.x = 1300
+        if self.x < -200:
+            return True
+
+    def reset(self):
+
+        self.img = random.choice(self.images)
+        self.mask = pygame.mask.from_surface(self.img)
+        self.x = random.randint(1280, 2000)
+        self.y = GROUND_POS - self.img.get_height()
+
 
     def draw(self, win):
         
