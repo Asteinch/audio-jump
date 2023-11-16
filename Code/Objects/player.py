@@ -20,7 +20,6 @@ class Player:
 
         self.frames = 0
 
-
     def update(self):
 
         self.apply_gravity()
@@ -64,11 +63,9 @@ class Player:
 
         if not self.is_jumping and audioManager.get_volume() > audioManager.bg_noise:
 
-            if 5 > (audioManager.get_frequency() / 100) > 1:
-
-                self.jump_vel = 30#(audioManager.get_frequency() / 10) - 10
+            self.jump_vel = 30
              
-                self.is_jumping = True
+            self.is_jumping = True
 
     def draw(self, win):
 
