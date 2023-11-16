@@ -20,17 +20,16 @@ class audioManager:
 
         self.calibrate_background_noise()
 
-        print(self.bg_noise)
-
-
         self.recording = True
 
     def calibrate_background_noise(self):
 
-        data = self.STREAM.read(44100 * 5)
+
+
+        data = self.STREAM.read(44100 * 4)
         audio_data = np.frombuffer(data, dtype=np.int16)
 
-        self.bg_noise = self.find_volume(audio_data)
+        self.bg_noise = audio_data.max()
 
 
     def find_peak_frequency(self, data, rate):
